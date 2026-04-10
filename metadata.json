@@ -1,0 +1,5 @@
+{
+  "name": "Ludo Multiplayer Real-Time",
+  "description": "Un juego de Ludo para 4 jugadores en tiempo real. Los primeros 4 en entrar juegan.",
+  "requestFramePermissions": []
+}

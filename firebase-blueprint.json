@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Game": {
+      "title": "Game",
+      "description": "Represents the state of a Ludo game.",
+      "type": "object",
+      "properties": {
+        "players": {
+          "type": "array",
+          "description": "List of players in the game.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uid": { "type": "string" },
+              "name": { "type": "string" },
+              "color": { "type": "string", "enum": ["red", "blue", "yellow", "green"] },
+              "index": { "type": "integer" }
+            }
+          }
+        },
+        "pieces": {
+          "type": "object",
+          "description": "Positions of all pieces. Key is playerIndex_pieceIndex (e.g., '0_0'). Value is position index.",
+          "additionalProperties": { "type": "integer" }
+        },
+        "turn": { "type": "integer", "description": "Index of the player whose turn it is." },
+        "diceValue": { "type": "integer", "description": "Current dice roll value." },
+        "diceRolled": { "type": "boolean", "description": "Whether the dice has been rolled in the current turn." },
+        "status": { "type": "string", "enum": ["waiting", "playing", "finished"] },
+        "winner": { "type": "string", "description": "UID of the winner." },
+        "lastMoveAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["players", "pieces", "turn", "status"]
+    }
+  },
+  "firestore": {
+    "/games/{gameId}": {
+      "schema": "Game",
+      "description": "Collection of games. We use 'ludo-main' for the primary game."
+    }
+  }
+}

@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidGame(data) {
+      return data.players is list &&
+             data.pieces is map &&
+             data.turn is int &&
+             data.status in ['waiting', 'playing', 'finished'];
+    }
+
+    match /games/{gameId} {
+      allow read: if true;
+      
+      allow create: if isAuthenticated() && isValidGame(request.resource.data);
+      
+      allow update: if isAuthenticated() && 
+                    isValidGame(request.resource.data) &&
+                    (
+                      // Case 1: Joining the game
+                      (resource.data.status == 'waiting' && 
+                       resource.data.players.size() < 4 &&
+                       request.resource.data.players.size() == resource.data.players.size() + 1) ||
+                      
+                      // Case 2: Playing the game (only current turn player)
+                      (resource.data.status == 'playing') ||
+                      
+                      // Case 3: Starting the game
+                      (resource.data.status == 'waiting' && 
+                       resource.data.players.size() == 4 && 
+                       request.resource.data.status == 'playing') ||
+
+                      // Case 4: Admin
+                      (request.auth.token.email == "profetinte@gmail.com" && request.auth.token.email_verified == true)
+                    );
+    }
+  }
+}
