@@ -2,6 +2,19 @@
 
 Un juego de Ludo (Parchis) multijugador en tiempo real desarrollado con React, Firebase y Tailwind CSS.
 
+## 🚀 Despliegue en GitHub Pages
+
+Para que el juego funcione en GitHub Pages, he configurado un **GitHub Action** automático. Sigue estos pasos:
+
+1. **Sube el código** a tu repositorio de GitHub.
+2. Ve a la pestaña **Settings** (Configuración) de tu repositorio.
+3. En el menú de la izquierda, haz clic en **Pages**.
+4. En la sección **Build and deployment** > **Source**, asegúrate de seleccionar **GitHub Actions**.
+5. El archivo `.github/workflows/deploy.yml` que he creado se encargará de compilar y desplegar el juego automáticamente cada vez que hagas un `push` a la rama `main`.
+
+### ¿Por qué salía la página en blanco?
+Vite genera una aplicación que necesita ser "compilada" (build). GitHub Pages por defecto intenta servir los archivos fuente (`.tsx`), los cuales el navegador no entiende. Con el Action configurado, GitHub compilará el proyecto y servirá la carpeta `dist` resultante.
+
 ## 🚀 Tecnologías Utilizadas
 
 - **React 19**: Biblioteca principal para la interfaz de usuario.
