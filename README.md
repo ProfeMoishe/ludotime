@@ -1,20 +1,64 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Ludo Real-Time Multiplayer
 
-# Run and deploy your AI Studio app
+Un juego de Ludo (Parchis) multijugador en tiempo real desarrollado con React, Firebase y Tailwind CSS.
 
-This contains everything you need to run your app locally.
+## 🚀 Tecnologías Utilizadas
 
-View your app in AI Studio: https://ai.studio/apps/c0e0e3d0-41fd-4416-8415-506f1caef1bf
+- **React 19**: Biblioteca principal para la interfaz de usuario.
+- **Firebase Firestore**: Base de datos NoSQL en tiempo real para sincronizar el estado del juego entre los 4 jugadores.
+- **Firebase Auth**: Autenticación anónima para identificar a los jugadores de forma única.
+- **Tailwind CSS 4**: Estilizado moderno y responsivo del tablero y componentes.
+- **Framer Motion**: Animaciones fluidas para el movimiento de las fichas y el dado.
+- **Lucide React**: Iconografía del sistema.
+- **Canvas Confetti**: Efectos visuales para la celebración del ganador.
 
-## Run Locally
+## 🛠️ Explicación del Código
 
-**Prerequisites:**  Node.js
+### Estructura de Datos (`src/types.ts`)
+El estado del juego se centraliza en un objeto `GameState` que contiene:
+- `players`: Lista de hasta 4 jugadores con su UID, nombre y color asignado.
+- `pieces`: Un mapa donde la clave es `playerIndex_pieceIndex` y el valor es la posición (de -1 a 57).
+- `turn`: Índice del jugador que debe mover.
+- `diceRolled`: Estado booleano para controlar el flujo del turno.
 
+### Lógica del Juego (`src/App.tsx`)
+- **Sincronización**: Se utiliza `onSnapshot` de Firestore para que cualquier cambio realizado por un jugador se refleje instantáneamente en las pantallas de los demás.
+- **Movimiento**: La función `movePiece` calcula la nueva posición, gestiona las capturas (enviar fichas enemigas a la base) y verifica si el jugador ha ganado.
+- **Seguridad**: Las reglas de Firestore (`firestore.rules`) validan que solo el jugador cuyo turno es activo pueda modificar el estado de las piezas.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Componentes Visuales
+- **LudoBoard**: Renderiza un tablero de 15x15 celdas. Utiliza coordenadas predefinidas en `constants.ts` para mapear las posiciones lógicas a la rejilla visual.
+- **Dice**: Un componente interactivo que simula el lanzamiento de un dado con animaciones.
+
+## 🎮 Cómo se Juega
+
+1. **Ingreso**: Los primeros 4 usuarios en entrar a la web pueden unirse a la partida.
+2. **Lobby**: Haz clic en "Unirse a la Partida". Cuando haya al menos 2 jugadores, se puede "Comenzar Juego".
+3. **Turnos**:
+   - Lanza el dado haciendo clic en él.
+   - Si sacas un **6**, puedes sacar una ficha de la base o mover una que ya esté en el tablero.
+   - Si sacas cualquier otro número, solo puedes mover fichas que ya estén fuera.
+4. **Capturas**: Si tu ficha cae en la misma casilla que una ficha de otro jugador, la ficha del oponente regresa a su base (a menos que sea una zona segura de inicio).
+5. **Meta**: Debes llevar tus 4 fichas a la posición final (57). El primero en lograrlo gana.
+
+## 📈 Alcances y Limitaciones
+
+### Alcances
+- Juego funcional 100% en tiempo real.
+- Soporte para 2 a 4 jugadores simultáneos.
+- Lógica de colisiones y capturas implementada.
+- Interfaz responsiva que se adapta a dispositivos móviles y tablets.
+
+### Limitaciones
+- **Sesión Única**: Actualmente el juego está configurado para una única instancia global (`ludo-main`).
+- **Reconexión**: Si un jugador cierra la pestaña, su lugar queda ocupado pero no hay un sistema de "bots" que tome su lugar automáticamente.
+- **Chat**: No incluye sistema de chat integrado (potencial mejora).
+
+## 💡 Potencialidad de la Aplicación
+
+Esta base de código puede evolucionar hacia:
+1. **Múltiples Salas**: Implementar un sistema de creación de salas privadas con códigos de invitación.
+2. **Personalización**: Permitir a los usuarios elegir avatares o nombres personalizados vinculados a cuentas de Google.
+3. **Estadísticas**: Guardar el historial de victorias y derrotas de los jugadores.
+4. **IA**: Añadir jugadores controlados por la computadora para partidas en solitario.
+5. **Monetización**: Integración de skins para las fichas o el tablero.
